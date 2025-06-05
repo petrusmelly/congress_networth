@@ -24,33 +24,130 @@
 
 <body>
 
+    <div class="map-overlay right" id="properties"></div>
+
     <div id='map' style='width: 400px; height: 300px;'></div>
     <script>
+
+        // Shortened display names
+
+        displayNames = {
+            'il_district': 'District',
+            'IL_Congressional_NetWorth$.Congressperson': 'Congressperson',
+            'IL_Congressional_NetWorth$.Average_Net_Worth': 'Avg. Net Worth',
+            'IL_Congressional_NetWorth$.B19013_001E__Median_Household_': 'Median Household Income',
+            'wealth_index': 'Wealth Disparity Score'
+        };
+
         mapboxgl.accessToken = "<%= token %>"
         const map = new mapboxgl.Map({
             container: 'map', // container ID
-            style: 'mapbox://styles/mapbox/streets-v12', // style URL
-            center: [-74.5, 40], // starting position [lng, lat]
-            zoom: 9, // starting zoom
+            style: 'mapbox://styles/mapbox/satellite-v9', // style URL
+            center: [-89, 40.6], // starting position [lng, lat]
+            zoom: 4, // starting zoom
         });
 
+        const card = document.getElementById('properties');
+        const showCard = (feature) => {
+            card.innerHTML = `
+            <div class="map-overlay-inner">
+                <code>${feature.properties.il_district}</code><hr>
+                ${Object.entries(feature.properties)
+                    .filter(([key]) => displayNames[key]) // show only the data in display names
+                    .map(([key, value]) => `<li><b>${displayNames[key]}</b>: ${value}</li>`)
+                    .join('')}
+
+            </div>`;
+
+            card.style.display = 'block';
+        };
+
         map.on('load', () => {
+            // Adding our GeoJSON data to the map
             map.addSource('congress-networth', {
                 type: 'geojson',
-                data: '/static/congress_networth.geojson'
+                data: '/static/congress_nw.geojson'
             })
 
+            // Adding congressional networth data to the map.
+            // This includes the fill color logic for the choropleth map
+            // As well as upon hovering, a district turns blue
             map.addLayer({
                 'id': 'networth-layer',
                 'type': 'fill',
                 'source': 'congress-networth',
                 'paint': {
-                    'fill-color': '#0080ff',
-                    'fill-opacity': 0.5,
-                    'fill-outline-color': "#ffffff"
+                    'fill-color': [
+                        'case',
+                        ['boolean', ['feature-state', 'hover'], false],
+                        '#0066ff',
+                        [
+                            'step',
+                            ['get', 'wealth_index'],
+                            '#f1eef6', //default color or < first step
+                            .00001, '#D2F2D4',
+                            10, '#7BE382',
+                            50, '#26CC00',
+                            100, '#22B600',
+                            216, '#009C1A'
+                        ]
+                    ],
+                    'fill-opacity': 0.85,
+                    'fill-outline-color': '#ffffff'
                 }
             });
+
+            let hoverId = null;
+
+            // 'e' is the event object in MapBox GL JS
+            // e.features is an array of GeoJSON features from the layer under the mouse at the moment
+            // e.features has a length b/c is 1 or more features are under cursor, length = 1 or more, if you're on the background or outside the layer, its 0
+            // we're saying when the mouse moves on the networth layer, if the hover is over a polygon from net worth layer, do the hover effect
+            map.on('mousemove', 'networth-layer', (e) => {
+                if (e.features.length > 0) {
+                    if (hoverId !== null) {
+                        map.setFeatureState(
+                            { source: 'congress-networth', id: hoverId },
+                            { hover: false }
+                        );
+                    }
+
+                    // e.features[0] is the first feature under the mouse
+                    // so here we're going into the hover featured and grabbing its id
+                    // that zero index is just a reference to the first feature under the mouse
+                    hoverId = e.features[0].id;
+
+                    map.setFeatureState(
+                        { source: 'congress-networth', id: hoverId },
+                        { hover: true }
+                    );
+                }
+            });
+
+            map.on('mouseleave', 'networth-layer', () => {
+                if (hoverId !== null) {
+                    map.setFeatureState(
+                        { source: 'congress-networth', id: hoverId },
+                        { hover: false }
+                    );
+                }
+                hoverId = null;
+            })
+
+            let selectedFeature = null;
+            map.on('click', 'networth-layer', (e) => {
+                const feature = e.features[0];
+                if (selectedFeature) {
+                    map.setFeatureState(selectedFeature, { selected: false });
+                }
+
+                selectedFeature = feature;
+                map.setFeatureState(feature, { selected: true });
+                showCard(feature);
+            }
+            );
         });
+
     </script>
 
 </body>
