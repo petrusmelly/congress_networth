@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    height:75vh;
+    width: 50vw;
+}
+
+.map-overlay-right {
+    color: red;
+}
+
+.map-overlay-inner {
+    color: blue;
+}

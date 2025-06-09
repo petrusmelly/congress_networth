@@ -6,27 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="/static/styles/home.css">
     <title>Like Us Map</title>
 </head>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
-    #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
-    }
-</style>
 
 <body>
 
-    <div class="map-overlay right" id="properties"></div>
+    <div class="container">
 
-    <div id='map' style='width: 400px; height: 300px;'></div>
+        <h1 class="title">Not Like Us?</h1>
+
+        <h2>An examination of congressional networth and median district income.</h2>
+
+        <div class="map-overlay-right" id="properties"></div>
+
+        <div id='map'></div>
+
+        <h3>Methodology</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum neque doloribus repellendus nobis repellat
+            id tempore in? A beatae dicta, iusto doloremque molestiae eius veritatis vero repudiandae maxime facere
+            consequuntur?
+            Cupiditate pariatur consectetur voluptatum culpa harum maxime hic repellendus velit porro unde quod autem
+            vitae incidunt eius exercitationem quaerat, eveniet alias. Minus eaque debitis vel repudiandae eligendi in
+            mollitia cum?</p>
+
+    </div>
     <script>
 
         // Shortened display names
@@ -44,7 +48,7 @@
             container: 'map', // container ID
             style: 'mapbox://styles/mapbox/satellite-v9', // style URL
             center: [-89, 40.6], // starting position [lng, lat]
-            zoom: 4, // starting zoom
+            zoom: 5, // starting zoom
         });
 
         const card = document.getElementById('properties');
@@ -101,7 +105,7 @@
 
             // 'e' is the event object in MapBox GL JS
             // e.features is an array of GeoJSON features from the layer under the mouse at the moment
-            // e.features has a length b/c is 1 or more features are under cursor, length = 1 or more, if you're on the background or outside the layer, its 0
+            // e.features has a length b/c if 1 or more features are under cursor, length = 1 or more, if you're on the background or outside the layer, its 0
             // we're saying when the mouse moves on the networth layer, if the hover is over a polygon from net worth layer, do the hover effect
             map.on('mousemove', 'networth-layer', (e) => {
                 if (e.features.length > 0) {
@@ -113,7 +117,7 @@
                     }
 
                     // e.features[0] is the first feature under the mouse
-                    // so here we're going into the hover featured and grabbing its id
+                    // so here we're going into the hover feature and grabbing its id
                     // that zero index is just a reference to the first feature under the mouse
                     hoverId = e.features[0].id;
 
