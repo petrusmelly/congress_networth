@@ -18,9 +18,12 @@
 
         <h2>An examination of congressional networth and median district income.</h2>
 
-        <div class="map-overlay-right" id="properties"></div>
+        <section class="main">
+            <div class="map-overlay-right" id="properties"></div>
+            <div id='map'></div>
+            <div class="map-overlay" id="legend"></div>
 
-        <div id='map'></div>
+        </section>
 
         <h3>Methodology</h3>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum neque doloribus repellendus nobis repellat
@@ -39,7 +42,7 @@
             'il_district': 'District',
             'IL_Congressional_NetWorth$.Congressperson': 'Congressperson',
             'IL_Congressional_NetWorth$.Average_Net_Worth': 'Avg. Net Worth',
-            'IL_Congressional_NetWorth$.B19013_001E__Median_Household_': 'Median Household Income',
+            'IL_Congressional_NetWorth$.B19013_001E___Median_Household_': 'Median Household Income',
             'wealth_index': 'Wealth Disparity Score'
         };
 
@@ -52,6 +55,26 @@
         });
 
         const card = document.getElementById('properties');
+
+        const intro = `<p>Click an Illinois Congressional District to see that congress person's net worth, their district's median annual income, and a wealth index score for comparison.</p>
+        
+        <p>A congress person's networth was estimated using congressional financial disclosure reports from 2023. These reports were reviewed and the value of assets and liabilities were aggregated.</p>
+        
+        <p>Congressional district median annual income is from Census data.</p>
+        
+        <p>An index score was created to show the difference in a congress person's networth and the median annual income of the people they represent. In short, how much more (or less) wealth does your congress person have compared to the typical annual income in your district?</p>
+        
+        <p>We took the average net worth, less the median income, and divided by median income. This provided us a proportional difference between a congress person's networth and what the typical household in their distric makes in a year.</p>
+        
+        <p>If a score is 0, then that indicates their net worth is equal to the annual income of their constituents. A positive value indicates that the represetative has more wealth. A negative number indicates they have less.</p>
+        
+        <p>If a representative has a score of 200, that means they have 200x (20,000%) more wealth than is earned in a year by a typical household in their district.</p>
+
+        <p>Alternatively, a negative score indicates they have a net worth lower than a typical households annual income. A more comphrehensive discussion of the methodology is at the bottom of the page.</p>
+        `;
+
+        card.innerHTML = intro;
+
         const showCard = (feature) => {
             card.innerHTML = `
             <div class="map-overlay-inner">
@@ -60,10 +83,16 @@
                     .filter(([key]) => displayNames[key]) // show only the data in display names
                     .map(([key, value]) => `<li><b>${displayNames[key]}</b>: ${value}</li>`)
                     .join('')}
+                <br><button id="show-intro-btn">Show Intro</button>
 
             </div>`;
 
             card.style.display = 'block';
+
+            // Click event listener for the button to toggle back to introduction/instructions
+            document.getElementById('show-intro-btn').addEventListener('click', () => {
+                card.innerHTML = intro;
+            });
         };
 
         map.on('load', () => {
@@ -71,7 +100,40 @@
             map.addSource('congress-networth', {
                 type: 'geojson',
                 data: '/static/congress_nw.geojson'
-            })
+            });
+
+
+            const layers = [
+                'Below District Median',
+                'Slightly Above Median',
+                'Wealthy',
+                'Very Wealthy',
+                'Extremely Wealthy',
+            ];
+
+            const colors = [
+                '#D2F2D4',
+                '#7BE382',
+                '#26CC00',
+                '#22B600',
+                '#009C1A'
+            ];
+
+            const legend = document.getElementById('legend');
+
+            layers.forEach((layer, i) => {
+                const color = colors[i];
+                const item = document.createElement('div');
+                const key = document.createElement('span');
+                key.className = 'legend-key';
+                key.style.backgroundColor = color;
+
+                const value = document.createElement('span');
+                value.innerHTML = `${layer}`;
+                item.appendChild(key);
+                item.appendChild(value);
+                legend.appendChild(item);
+            });
 
             // Adding congressional networth data to the map.
             // This includes the fill color logic for the choropleth map
