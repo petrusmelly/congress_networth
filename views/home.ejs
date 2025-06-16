@@ -58,36 +58,43 @@
 
         const card = document.getElementById('properties');
 
-        const intro = `<p>Click an Illinois Congressional District to see that congress person's net worth, their district's median annual income, and a wealth index score for comparison.</p>
-        
-        <p>A congress person's networth was estimated using congressional financial disclosure reports from 2023. These reports were reviewed and the value of assets and liabilities were aggregated.</p>
-        
-        <p>Congressional district median annual income is from Census data.</p>
-        
-        <p>An index score was created to show the difference in a congress person's networth and the median annual income of the people they represent. In short, how much more (or less) wealth does your congress person have compared to the typical annual income in your district?</p>
-        
-        <p>We took the average net worth, less the median income, and divided by median income. This provided us a proportional difference between a congress person's networth and what the typical household in their distric makes in a year.</p>
-        
-        <p>If a score is 0, then that indicates their net worth is equal to the annual income of their constituents. A positive value indicates that the represetative has more wealth. A negative number indicates they have less.</p>
-        
-        <p>If a representative has a score of 200, that means they have 200x (20,000%) more wealth than is earned in a year by a typical household in their district.</p>
+        const intro = `
+        <p>Click on a congressional district to see that representative’s estimated net worth, the median annual income of their district, and a wealth disparity score for comparison.</p>
 
-        <p>Alternatively, a negative score indicates they have a net worth lower than a typical households annual income. A more comphrehensive discussion of the methodology is at the bottom of the page.</p>
+        <p>Congressional net worth estimates are based on 2023 financial disclosure reports. Asset and liability ranges were reviewed and aggregated to calculate an average net worth for each representative.</p>
+
+        <p>District-level median household income data comes from the U.S. Census Bureau.</p>
+
+        <p>The wealth disparity index compares a representative’s net worth to the income of the people they represent. It answers the question: how much more (or less) wealth does a congressperson have compared to the typical household in their district?</p>
+
+        <p>The score is calculated by subtracting the median household income from the representative’s net worth, then dividing the result by the median income. In other words:  
+        <em>(Net Worth − Median Income) ÷ Median Income</em>.</p>
+
+        <p>A score of 0 means the representative’s net worth is equal to the district’s median income. A score of 1 means they have twice as much. A score of 2 means three times as much, and so on. Negative scores indicate the representative has less wealth than the typical household in their district.</p>
+
+        <p>For example, a score of 200 means the representative's net worth is 201 times greater than the district’s median income—a disparity of 20,000%.</p>
+
+        <p>Additional methodology details can be found at the bottom of the page.</p>
         `;
 
         card.innerHTML = intro;
 
         const showCard = (feature) => {
+            const listItems = Object.entries(feature.properties).filter(([key]) => displayNames[key]).map(([key, value]) => {
+                let formattedValue = value;
+                if (typeof value === 'number' && key !== 'il_district' && key !== 'wealth_index') {
+                    formattedValue = `$${value.toLocaleString()}`;
+                }
+                return `<li><b>${displayNames[key]}</b>: ${formattedValue}</li>`
+            })
+                .join('');
+
             card.innerHTML = `
             <div class="map-overlay-inner">
                 <code>${feature.properties.il_district}</code><hr>
-                ${Object.entries(feature.properties)
-                    .filter(([key]) => displayNames[key]) // show only the data in display names
-                    .map(([key, value]) => `<li><b>${displayNames[key]}</b>: ${value}</li>`)
-                    .join('')}
+                <ul>${listItems}</ul>
                 <br><button id="show-intro-btn">Show Intro</button>
-
-            </div>`;
+                </div>`;
 
             card.style.display = 'block';
 
