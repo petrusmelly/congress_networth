@@ -20,8 +20,10 @@
 
         <section class="main">
             <div class="map-overlay-right" id="properties"></div>
-            <div id='map'></div>
-            <div class="map-overlay" id="legend"></div>
+            <div class="map-legend-container">
+                <div id='map'></div>
+                <div class="map-overlay" id="legend"></div>
+            </div>
 
         </section>
 
@@ -125,6 +127,7 @@
                 const color = colors[i];
                 const item = document.createElement('div');
                 const key = document.createElement('span');
+                item.className = 'legend-item';
                 key.className = 'legend-key';
                 key.style.backgroundColor = color;
 
