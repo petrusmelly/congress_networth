@@ -24,7 +24,7 @@ The results are shown as a color-coded choropleth map of Illinois districts, all
 
 - Interactive map using Mapbox GL JS
 - Choropleth color scale based on wealth disparity score
-- 📋 Click on a district to see:
+- Click on a district to see:
   - Representative’s name
   - Estimated average net worth
   - District median income
@@ -50,7 +50,21 @@ The results are shown as a color-coded choropleth map of Illinois districts, all
 - [U.S. Census Bureau – ACS Data](https://data.census.gov/)
 - Net worth estimated using [OpenSecrets methodology](https://www.opensecrets.org/personal-finances/methodology)
 
-> Net worth was calculated by summing minimum asset values and subtracting maximum liabilities to create a conservative baseline. See full methodology in the project’s "Methodology" section.
+> Net worth was calculated by summing minimum asset values and subtracting maximum liabilities to create a conservative baseline. See full methodology in the live site’s "Methodology" section.
+
+### Spatial Data
+Congressional District Boundaries
+Source: U.S. Census Bureau – TIGER/Line Shapefiles (2022)
+Dataset: 118th Congressional Districts
+Format: Shapefile (.shp)
+
+### Socioeconomic Data
+Median Household Income
+Source: U.S. Census Bureau – American Community Survey (ACS) 5-Year Estimates (2022)
+Table: B19013 — Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars)
+Fields used:
+
+B19013_001E: Median Income
 
 ---
 
