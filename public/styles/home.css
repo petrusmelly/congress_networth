@@ -24,6 +24,7 @@ body {
     height: 100%;
     width: 75%;
     color: black;
+    margin: 15px;
 }
 
 .map-overlay-inner {
@@ -35,8 +36,17 @@ body {
     margin: 20px;
 }
 
+#district-heading {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
 .map-legend-container {
     position: relative;
+}
+
+.methodology {
+    padding: 15px;
 }
 
 #legend {
@@ -66,4 +76,48 @@ body {
   height: 10px;
   margin-right: 10px;
   flex-shrink: 0;
+}
+
+/* Hide button on desktop */
+#toggle-legend-btn {
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 2;
+  padding: 6px 10px;
+  background: white;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* Media Queries */
+
+@media only screen and (max-width: 850px) {
+  .main {
+    flex-direction: column;
+  }
+
+  #map {
+    width: 100vw;
+    height: 50vh;
+  }
+
+  .map-overlay-right {
+    width: 100%;
+    height: auto;
+  }
+
+  #toggle-legend-btn {
+    display: block;
+  }
+
+    #legend {
+    display: none;
+  }
+
+  #legend.show {
+    display: block;
+  }
 }

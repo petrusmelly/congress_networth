@@ -7,7 +7,7 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="/static/styles/home.css">
-    <title>Like Us Map</title>
+    <title>IL House of Reps Networth Map</title>
 </head>
 
 <body>
@@ -16,24 +16,85 @@
 
         <h1 class="title">Not Like Us?</h1>
 
-        <h2>An examination of congressional networth and median district income.</h2>
+        <h2>How Does Congressional Networth Compare to Their Constituent's Income?</h2>
 
         <section class="main">
             <div class="map-overlay-right" id="properties"></div>
             <div class="map-legend-container">
                 <div id='map'></div>
                 <div class="map-overlay" id="legend"></div>
+                <button id="toggle-legend-btn">Show Legend</button>
             </div>
 
         </section>
 
-        <h3>Methodology</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum neque doloribus repellendus nobis repellat
-            id tempore in? A beatae dicta, iusto doloremque molestiae eius veritatis vero repudiandae maxime facere
-            consequuntur?
-            Cupiditate pariatur consectetur voluptatum culpa harum maxime hic repellendus velit porro unde quod autem
-            vitae incidunt eius exercitationem quaerat, eveniet alias. Minus eaque debitis vel repudiandae eligendi in
-            mollitia cum?</p>
+        <section class="methodology">
+
+            <h3>Methodology</h3>
+
+            <p>
+
+            <p>Congressional net worth estimates are based on 2023 financial disclosure reports downloaded from the <a
+                    href="https://disclosures-clerk.house.gov/FinancialDisclosure">House of Representatives</a>. Asset
+                and liability ranges were reviewed and aggregated to calculate an average net worth for each
+                representative.
+            </p>
+
+            <p>I followed the <a href="https://www.opensecrets.org/personal-finances/methodology">Open Secrets</a>
+                methodology for figuring net worth of congressional representatives.
+
+            <blockquote>Net worth was calculated by summing the filer's assets and then subtracting any listed
+                liabilities.
+                Filers report the amount of each of their assets, transactions and liabilities as falling within one of
+                several ranges. The minimum possible values for each asset were added together as were the maximum
+                possible
+                values. Likewise, minimum and maximum liability amounts were summed. The maximum debt figure was then
+                subtracted from the minimum asset figure and the minimum debt figure was subtracted from the maximum
+                asset
+                figure. The resulting range represents the extremes of how much a filer could be worth, and his or her
+                actual net worth should fall somewhere within that range.</blockquote>
+            </p>
+
+            <p>
+                An index score was calculated in an attempt to normalize and compare the net worth of congressional
+                representatives relative to their constiuency. It is challenging to find data on the average or median
+                networth of folks living in a congressional district. As a proxy I used median annual income of a
+                congressional district. District-level median household income data comes from the U.S. Census Bureau.
+
+                Thus the calculation for the index is:
+
+            <blockquote><em>(Congressional Net Worth − Constituent Median Income) ÷ Constituent Median Income</em>
+            </blockquote>
+
+            </p>
+
+            <p>
+                While it would be best to use the net worth of the constituency, such data is difficult to find. This
+                was conducted as an exploratory exercise to see if any large discrepancies exist that would prompt
+                future
+                investigation.
+            </p>
+
+            <h3>Why this Matters</h3>
+
+            <p>The main question we are seeking to answer is: <b>Can a representative that is 5 times, 10 times, or over
+                    100 times more wealthy than their constituency understand the needs of their district?</b>
+
+            <p>Which yields additional questions such as:</p>
+
+            <ul>
+                <li>How does their wealth change their understanding of and relationship to work?</li>
+                <li>To time and family?</li>
+                <li>To risk, debt, and healthcare?</li>
+                <li>Once elected, does their substantial wealth work to keep them in power?</li>
+                <li>How much has their wealth changed since being elected?</li>
+            </ul>
+            </p>
+
+            <p>The intent of this project is not to shame individuals. It's purpose is to provoke thought and encourage
+                deeper questions about how wealth, representation, and policy intersect. Hopefully it inspires you to
+                consider such questions the next time you head to the ballot box.</p>
+        </section>
 
     </div>
     <script>
@@ -61,20 +122,16 @@
         const intro = `
         <p>Click on a congressional district to see that representative’s estimated net worth, the median annual income of their district, and a wealth disparity score for comparison.</p>
 
-        <p>Congressional net worth estimates are based on 2023 financial disclosure reports. Asset and liability ranges were reviewed and aggregated to calculate an average net worth for each representative.</p>
-
-        <p>District-level median household income data comes from the U.S. Census Bureau.</p>
-
-        <p>The wealth disparity index compares a representative’s net worth to the income of the people they represent. It answers the question: how much more (or less) wealth does a congressperson have compared to the typical household in their district?</p>
+        <p>The <b>wealth disparity index</b> compares a representative’s net worth to the income of the people they represent. It answers the question: how much more (or less) wealth does a congressperson have compared to the typical household in their district?</p>
 
         <p>The score is calculated by subtracting the median household income from the representative’s net worth, then dividing the result by the median income. In other words:  
-        <em>(Net Worth − Median Income) ÷ Median Income</em>.</p>
+        <b><em>(Net Worth − Median Income) ÷ Median Income</em></b>.</p>
 
-        <p>A score of 0 means the representative’s net worth is equal to the district’s median income. A score of 1 means they have twice as much. A score of 2 means three times as much, and so on. Negative scores indicate the representative has less wealth than the typical household in their district.</p>
+        <p>A score of 0 means the representative’s net worth is equal to the district’s median income. A score of 1 means they have twice as much. A score of 2 means three times as much, and so on. Negative scores indicate the representative has <em>less</em> wealth than the typical household in their district.</p>
 
-        <p>For example, a score of 200 means the representative's net worth is 201 times greater than the district’s median income—a disparity of 20,000%.</p>
+        <p>For example, a score of <b>200</b> means the representative's net worth is <b>201 times greater</b> than the district’s median income—a disparity of 20,000%.</p>
 
-        <p>Additional methodology details can be found at the bottom of the page.</p>
+        <p>Additional methodology details can be found at the bottom of the page as well as links to sources.</p>
         `;
 
         card.innerHTML = intro;
@@ -91,7 +148,8 @@
 
             card.innerHTML = `
             <div class="map-overlay-inner">
-                <code>${feature.properties.il_district}</code><hr>
+                <span id='district-heading'>${feature.properties.il_district} – ${feature.properties['IL_Congressional_NetWorth$.Congressperson']}</span>
+                <hr>
                 <ul>${listItems}</ul>
                 <br><button id="show-intro-btn">Show Intro</button>
                 </div>`;
@@ -222,6 +280,17 @@
                 showCard(feature);
             }
             );
+        });
+
+
+        //Toggle legend button for small screens/mobile devices:
+
+        const toggleBtn = document.getElementById('toggle-legend-btn');
+        const legend = document.getElementById('legend');
+
+        toggleBtn.addEventListener('click', () => {
+            legend.classList.toggle('show');
+            toggleBtn.textContent = legend.classList.contains('show') ? 'Hide Legend' : 'Show Legend';
         });
 
     </script>
